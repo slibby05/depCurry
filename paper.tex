@@ -1,0 +1,134 @@
+\documentclass{article}
+
+\usepackage{amssymb}
+
+\renewcommand{\tt}{\ttfamily}
+\newcommand{\codefont}{\small\tt}
+\newcommand{\code}[1]{\mbox{\codefont{#1}}}
+\newcommand{\ccode}[1]{``\code{#1}''}
+\newcommand{\fcode}[1]{\mbox{\codefont{\footnotesize{#1}}}} % code in footnote
+
+\usepackage{listings}
+\lstset{aboveskip=0.7ex,
+        belowskip=0.7ex,
+        showstringspaces=false, % no special string space
+        mathescape=true,
+        xleftmargin=2ex,
+        flexiblecolumns=false,
+        basewidth=0.55em,
+        basicstyle=\small\ttfamily}
+\lstnewenvironment{curry}{\lstset{literate={->}{{$\rightarrow{}\!\!\!$}}3}}{}
+\newcommand{\listline}{\vrule width0pt depth1.5ex}
+
+\begin{document}
+
+\begin{abstract}
+  Needs a rather precise statement and result before writing the rest
+  of the paper.
+  \sloppy
+\end{abstract}
+
+\section{introduction}
+
+dependent types
+
+functional logic programming
+
+dependent types in agda
+
+goal: dependent types with ?
+
+\section{semantics}
+questions to answer:
+  when do we evaluate types
+  when do we backtrack
+    in four of a kind example we need to check that refl doesn't work and then backtrack
+
+    valid
+------------------
+set_i : set_{i+1}
+
+A : set    x:A |- B : set
+-------------------------
+    (x:A) * B : set
+
+
+A : set    x:A |- B : set
+-------------------------
+    (x:A) -> B : set
+
+x : A \in \Gamma
+------------------
+  \Gamma |- x : A
+
+s : A    t : B[x := s]
+----------------------
+  (s,t) : (x:A) * B
+
+
+  t : (x:A) * B
+----------------
+     p1 t : A
+
+     t : (x:A) * B
+----------------------
+  p2 t : B[x := p1 t]
+
+       x : A |- t : B
+--------------------------
+   \ x . t : (x:A) -> B
+
+  s : (x : A) -> B      t : A
+--------------------------------
+          s t : B[x := t]
+
+  x : A       y : B
+-----------------------
+     x ? y : A ? B
+
+    t : A ? B
+----------------
+ t : A    t : B
+
+\section{examples}
+\subsection{four of a kind}
+\begin{verbatim}
+  fourOfAKind [a1,a2,a3,a4,a5] = same [a1,a2,a3,a4] ? 
+                                 same [a1,a2,a3,a5] ? 
+                                 same [a1,a2,a4,a5] ? 
+                                 same [a1,a3,a4,a5] ? 
+                                 same [a2,a3,a4,a5]
+ where same [x1,x2,x3,x4] = [x1,x2,x3,x4] == [x1,x1,x1,x1]
+
+f : fourOfAKind [1,1,3,1,1] == tt
+f = refl
+\end{verbatim}
+
+\subsection{sorting}
+  algorithm
+  introducing rewrite
+
+\subsection{image editing}
+  RGB vs Grayscale (two different types)
+  properties
+\begin{verbatim}
+    f : (a ? b) -> x and g : a then in f g, f : a -> x
+    f : x -> (a ? b) and g : a -> x then g . f : x -> x
+\end{verbatim}
+  downside
+\begin{verbatim}
+    f : (a ? b) -> (a ? b) then we expect if x : a then f x : a.
+\end{verbatim}
+This isn't true (could be solved with free variables and constraints).
+What about
+\begin{verbatim}
+    f : (a -> a) ? (b -> b)
+    f : t -> t where t = a ? b
+\end{verbatim}
+
+  
+
+
+\section{conclusion}
+
+\end{document}
