@@ -23,8 +23,14 @@
 \begin{document}
 
 \begin{abstract}
-  Needs a rather precise statement and result before writing the rest
-  of the paper.
+  We propose a modest first step in the integration of dependent types
+  and functional logic programming by adding non-determinism as a first class operation 
+  to a dependently typed language.
+  This is built on the work of Antoy et al \cite{agda}, but we extend this by 
+  defining non-determinism as part of the core language as opposed to simulating it in Agda.
+  We define the semantics of this new language, prove basic properties about the language, and give several examples of how it can be used
+  to simplify proofs from Agda.
+  We also discuss some of the more surprising results, and rebuild some of the syntactic conveniences of Agda.
   \sloppy
 \end{abstract}
 
@@ -44,51 +50,26 @@ questions to answer:
   when do we backtrack
     in four of a kind example we need to check that refl doesn't work and then backtrack
 
-    valid
-------------------
-set_i : set_{i+1}
-
-A : set    x:A |- B : set
--------------------------
-    (x:A) * B : set
-
-
-A : set    x:A |- B : set
--------------------------
-    (x:A) -> B : set
-
-x : A \in \Gamma
-------------------
-  \Gamma |- x : A
-
-s : A    t : B[x := s]
-----------------------
-  (s,t) : (x:A) * B
-
-
-  t : (x:A) * B
-----------------
-     p1 t : A
-
-     t : (x:A) * B
-----------------------
-  p2 t : B[x := p1 t]
-
-       x : A |- t : B
---------------------------
-   \ x . t : (x:A) -> B
-
-  s : (x : A) -> B      t : A
---------------------------------
-          s t : B[x := t]
-
-  x : A       y : B
------------------------
-     x ? y : A ? B
-
-    t : A ? B
-----------------
- t : A    t : B
+%typing rules for agda + choice
+%
+%      valid            x : A \in env
+%  ------------------  ---------------
+%  set_i : set_{i+1}     env |- x : A
+%
+%  
+%  A : set    x:A |- B : set    s : A    t : B[x := s]       t : (x:A) * B          t : (x:A) * B     
+%  -------------------------    ----------------------   ---------------------  --------------------- 
+%      (x:A) * B : set            (s,t) : (x:A) * B            p1 t : A          p2 t : B[x := p1 t]  
+%  
+%  
+%  A : set    x:A |- B : set         x : A |- t : B         s : (x : A) -> B      t : A    
+%  -------------------------  --------------------------  -------------------------------- 
+%      (x:A) -> B : set          \ x . t : (x:A) -> B               s t : B[x := t]         
+%  
+%  
+%    x : A       y : B         t : A ? B    
+%  -----------------------  ---------------- 
+%       x ? y : A ? B        t : A    t : B  
 
 \section{examples}
 \subsection{four of a kind}
@@ -125,7 +106,6 @@ What about
     f : (a -> a) ? (b -> b)
     f : t -> t where t = a ? b
 \end{verbatim}
-
   
 
 
